@@ -1,45 +1,36 @@
 import cv2
 import numpy as np
 
-# Load the template image of a Raspberry Pi with all USB ports
-template = cv2.imread('raspberry_pi_template.jpeg', cv2.IMREAD_GRAYSCALE)
+# Load the template image of a Raspberry Pi with all ports
+template = cv2.imread('raspberry_pi_template.png', cv2.IMREAD_GRAYSCALE)
 
-# Initialize the camera
-camera = cv2.VideoCapture(0)
+# Define the path to the input image of the Raspberry Pi to classify
+input_image_path = 'raspberry_pi_to_classify.png'
 
-while True:
-    # Display the camera feed
-    ret, frame = camera.read()
-    cv2.imshow('Camera Feed', frame)
+# Load the input image
+input_image = cv2.imread(input_image_path, cv2.IMREAD_GRAYSCALE)
 
-    # Check if the user pressed the Enter key
-    if cv2.waitKey(1) == 13:
-        break
+# Apply template matching to find the template in the input image
+result = cv2.matchTemplate(input_image, template, cv2.TM_CCOEFF_NORMED)
+_, max_val, _, max_loc = cv2.minMaxLoc(result)
 
-# Convert the captured frame to grayscale
-input_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+# Set a threshold for the match score to determine if the template is found
+threshold = 0.8
 
-# Apply ORB feature detection and extraction
-orb = cv2.ORB_create()
-kp_template, des_template = orb.detectAndCompute(template, None)
-kp_input, des_input = orb.detectAndCompute(input_image, None)
+# If the match score is above the threshold, classify it as a Raspberry Pi with all ports
+if max_val > threshold:
+    print("Raspberry Pi with all ports")
 
-# Create a brute-force matcher
-bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    # Draw a bounding box around the template in the input image
+    template_height, template_width = template.shape
+    top_left = max_loc
+    bottom_right = (top_left[0] + template_width, top_left[1] + template_height)
+    cv2.rectangle(input_image, top_left, bottom_right, 255, 2)
 
-# Match the descriptors
-matches = bf.match(des_template, des_input)
-matches = sorted(matches, key=lambda x: x.distance)
-
-# Set a minimum number of good matches
-min_good_matches = 20
-
-# If the number of good matches is above the threshold, classify it as a Raspberry Pi with all USB ports
-if len(matches) > min_good_matches:
-    print("Raspberry Pi with all USB ports")
 else:
-    print("Raspberry Pi with missing USB ports")
+    print("Raspberry Pi with missing ports")
 
-# Release the camera and close any open windows
-camera.release()
+# Display the input image with the bounding box (if applicable)
+cv2.imshow('Raspberry Pi Classification', input_image)
+cv2.waitKey(0)
 cv2.destroyAllWindows()
