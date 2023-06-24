@@ -33,4 +33,4 @@ else:
 # Display the input image with the bounding box (if applicable)
 cv2.imshow('Raspberry Pi Classification', input_image)
 cv2.waitKey(0)
-cv2.destroyAllWindows
+cv2.destroyAllWindows()
