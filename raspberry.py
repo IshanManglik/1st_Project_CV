@@ -1,5 +1,5 @@
 import cv2
-import numpy as np
+import numpy as 
 
 # Load the template image of a Raspberry Pi with all ports
 template = cv2.imread('raspberry_pi_template.jpeg', cv2.IMREAD_GRAYSCALE)
