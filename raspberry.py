@@ -5,7 +5,7 @@ import numpy as np
 template = cv2.imread('raspberry_pi_template.jpeg', cv2.IMREAD_GRAYSCALE)
 
 # Define the path to the input image of the Raspberry Pi to classify
-input_image_path = 'raspberry_pi_to_classify.jpeg'
+input_image_path = 'raspberry_pi_to_classify.png'
 
 # Load the input image
 input_image = cv2.imread(input_image_path, cv2.IMREAD_GRAYSCALE)
