@@ -1,4 +1,4 @@
-import cv2
+import cv
 import numpy as np
 
 # Load the template image of a Raspberry Pi with all ports
